@@ -68,9 +68,6 @@ def increment_score(player, computer):
     """
     prompt(f'you chose {player}, computer chose {computer}')
 
-    # PLAYER_SCORE = 0
-    # COMPUTER_SCORE = 0
-
     if display_winner(player,computer) == 'you win':
         global PLAYER_SCORE
         PLAYER_SCORE += 1
