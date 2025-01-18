@@ -9,10 +9,13 @@ LETTER_CHOICES = ['r', 'p', 'l', 'R', 'P', 'L', 'S', 's']
 VALID_CHOICES = ['rock', 'paper', 'scissors', 'spock', 'lizard']
 S_VALIDATION = ['S', 's']
 
-player_score = 0
-computer_score = 0
+PLAYER_SCORE = 0
+COMPUTER_SCORE = 0
 
 def prompt(message):
+    """
+    Displays the prompt
+    """
     print(f'==> {message}')
 
 def letter_to_word(choice):
@@ -21,17 +24,11 @@ def letter_to_word(choice):
     allows user to input only a letter
     """
     match choice:
-        case 'r':
+        case 'r' | 'R':
             return 'rock'
-        case 'p':
+        case 'p' | 'P':
             return 'paper'
-        case 'l':
-            return 'lizard'
-        case 'R':
-            return 'rock'
-        case 'P':
-            return 'paper'
-        case 'L':
+        case 'l' | 'L':
             return 'lizard'
         case 's':
             return 'spock'
@@ -42,82 +39,48 @@ def display_winner(player,computer):
     """
     display the winner of the round
     """
-    prompt(f'you chose {player}, computer chose {computer}')
-    if((player == "rock" and computer == "scissors") or
-        (player == "rock" and computer == "lizard") or
-        (player == "paper" and computer == "rock") or
-        (player == "paper" and computer == "spock") or
-        (player == "scissors" and computer == "paper") or
-        (player == "scissors" and computer == "lizard") or
-        (player == "lizard" and computer == "paper") or
-        (player == "lizard" and computer == "spock") or
-        (player == "spock" and computer == "rock") or
-        (player == "spock" and computer == "scissors")
-        ):
-        print("You win!")
-        # return player_score += 1
-
-    elif((player == "rock" and computer == "spock") or
-        (player == "rock" and computer == "paper") or
-        (player == "paper" and computer == "scissors") or
-        (player == "paper" and computer == "lizard") or
-        (player == "scissors" and computer == "rock") or
-        (player == "scissors" and computer == "spock") or
-        (player == "lizard" and computer == "rock") or
-        (player == "lizard" and computer == "scissors") or
-        (player == "spock" and computer == "lizard") or
-        (player == "spock" and computer == "paper")
-        ):
-        print("Computer wins!")
-        # return computer_score += 1
-
-    else:
-        print("It's a tie!")
-# create prompt syntax
-
-def increment_score(player,computer):
-
-    """
-    adds tally to score
-    """
-    global player_score
-    global computer_score
-
-    if((player == "rock" and computer == "scissors") or
-        (player == "rock" and computer == "lizard") or
-        (player == "paper" and computer == "rock") or
-        (player == "paper" and computer == "spock") or
-        (player == "scissors" and computer == "paper") or
-        (player == "scissors" and computer == "lizard") or
-        (player == "lizard" and computer == "paper") or
-        (player == "lizard" and computer == "spock") or
-        (player == "spock" and computer == "rock") or
-        (player == "spock" and computer == "scissors")
-        ):
-        player_score += 1
-
-    if((player == "rock" and computer == "spock") or
-        (player == "rock" and computer == "paper") or
-        (player == "paper" and computer == "scissors") or
-        (player == "paper" and computer == "lizard") or
-        (player == "scissors" and computer == "rock") or
-        (player == "scissors" and computer == "spock") or
-        (player == "lizard" and computer == "rock") or
-        (player == "lizard" and computer == "scissors") or
-        (player == "spock" and computer == "lizard") or
-        (player == "spock" and computer == "paper")
-        ):
-        computer_score += 1
+    match (player,computer):
+        case ('rock', 'scissors') | ('rock', 'lizard') | ('paper', 'rock'):
+            return 'you win'
+        case ('paper', 'spock') | ('scissors', 'paper') | ('scissors', 'lizard'):
+            return 'you win'
+        case ('lizard', 'paper') | ('lizard', 'spock') | ('spock', 'scissors') | ('spock', 'rock'):
+            return 'you win'
+        case ('rock', 'spock') | ('rock', 'paper') | ('paper', 'scissors'):
+            return 'computer wins'
+        case ('paper', 'lizard') | ('scissors', 'spock') | ('scissors', 'rock'):
+            return 'computer wins'
+        case ('lizard', 'scissors') | ('lizard', 'rock') | ('spock', 'lizard') | ('spock', 'paper'):
+            return 'computer wins'
 
 def display_score(player_score, computer_score):
     """
     says the score
     """
+    return f"""
+        The computer score is: {computer_score}
+        your score is:         {player_score}
+        """
 
-    print(f"""
-    The computer score is: {computer_score}
-    your score is:         {player_score}
-    """)
+def increment_score(player, computer):
+    """
+    adds tally to score
+    """
+    prompt(f'you chose {player}, computer chose {computer}')
+
+    # PLAYER_SCORE = 0
+    # COMPUTER_SCORE = 0
+
+    if display_winner(player,computer) == 'you win':
+        global PLAYER_SCORE
+        PLAYER_SCORE += 1
+
+    if display_winner(player,computer) == 'computer wins':
+        global COMPUTER_SCORE
+        COMPUTER_SCORE += 1
+
+    if computer == player:
+        prompt("it's a tie!")
 
 def who_wins(player_score, computer_score):
 
@@ -139,29 +102,29 @@ while True:
     while choice in S_VALIDATION:
         prompt('please type capital S for scissors or lowercase s for spock.')
         choice = input()
-        if choice == 's' or 'S':
+        if choice == 's'.lower():
+            break
+        if choice == 'S'.upper():
             break
 
     while choice not in LETTER_CHOICES:
-        # if the input in choice is not in the accepted variables
         prompt('not a valid choice.')
         choice = input()
-            # redoes an input, allows for it to be reented
 
-    choice = letter_to_word(choice)
+    CHOICE = letter_to_word(choice)
 
     computer_choice = random.choice(VALID_CHOICES)
 
-    display_winner(choice,computer_choice)
+    print(display_winner(CHOICE,computer_choice))
 
-    increment_score(choice,computer_choice)
+    increment_score(CHOICE,computer_choice)
 
-    display_score(player_score, computer_score)
+    print(display_score(PLAYER_SCORE, COMPUTER_SCORE))
 
-    who_wins(player_score,computer_score)
+    who_wins(PLAYER_SCORE,COMPUTER_SCORE)
 
         # end_game(player_score, computer_score)
-    if computer_score == 3 or player_score == 3:
+    if COMPUTER_SCORE == 3 or PLAYER_SCORE == 3:
         break
 
     while True:
